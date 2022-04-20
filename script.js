@@ -333,6 +333,10 @@ let korzina = [],
 addCart.addEventListener('click', function() {
     let price = document.querySelectorAll('.main__product-price span');
     let kcall = document.querySelectorAll('.main__product-kcall span');
+    let num = document.querySelectorAll('.main__product-num');
+    num.forEach(product => {
+        product.innerHTML = 0;
+    })
     price.forEach(product => {
         product.innerHTML = 0;
     })
