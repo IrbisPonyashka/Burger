@@ -244,16 +244,13 @@ let btnPlusOrMinus = document.querySelectorAll('.main__product-btn'),
 
 
 info.forEach(item => {
-    item.addEventListener('dblclick', function(){
-    getChild(item)
+    item.addEventListener('dblclick', () => {
+    getChild(item);
     view.classList.add('active');
-    btnClose.addEventListener('click', function(){
-    view.classList.remove('active');
+    btnClose.addEventListener('click', () => {view.classList.remove('active');
     })
 })
 })
-
-
 
 function getChild(item){
     let child = item.childNodes;
@@ -263,9 +260,7 @@ function getChild(item){
     let dochka = view.childNodes;
     let newDochka = dochka[3];
     newDochka.src = newChildSrc;
-
 }
-
 
 btnPlusOrMinus.forEach(item => {
     let interval = 0;
