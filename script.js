@@ -331,6 +331,14 @@ let korzina = [],
     totalKcall = 0;
     
 addCart.addEventListener('click', function() {
+    let price = document.querySelectorAll('.main__product-price span');
+    let kcall = document.querySelectorAll('.main__product-kcall span');
+    price.forEach(product => {
+        product.innerHTML = 0;
+    })
+    kcall.forEach(product => {
+        product.innerHTML = 0;
+    })
     for(let key in product) {
        let productoObj = product[key];
        if(productoObj.amount > 0) {
