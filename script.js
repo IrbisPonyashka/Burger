@@ -169,11 +169,14 @@
 //     location.reload();
 // })
 
+/* Основная продукция */
 let product = {
     plainBurger: {
         name: 'Гамбургер простой',
         price: 10000,
         kcall: 400,
+        img: 'images/product2.jpg',
+        descr: 'Встречайте простой ГАМБУРГЕР. Он не сочный и не сытный за то дешевый',
         amount: 0,
         get SUMM() {
             return this.price * this.amount
@@ -187,6 +190,8 @@ let product = {
         price: 20500,
         kcall: 900,
         amount: 0,
+        img: 'images/product1.jpg',
+        descr: 'Встречайте Фрешмена FAS FOOD`а. Он набрал в себя всё самое старое.',
         get SUMM() {
             return this.price * this.amount
         },
@@ -199,6 +204,22 @@ let product = {
         price: 31900,
         kcall: 1300,
         amount: 0,
+        img: 'images/product3.jpg',
+        descr: 'FRESH и Картошка фри. Тот же самый FRESH и Фри объяденились.',
+        get SUMM() {
+            return this.price * this.amount
+        },
+        get KCALL() {
+            return this.kcall * this.amount
+        }
+    },
+    bestBurger: {
+        name: 'Самый лучший бургер',
+        price: 100000,
+        kcall: 3300,
+        amount: 0,
+        img: 'https://avatars.mds.yandex.net/i?id=37b778c25a78b39b38d29a2b356f3ddc-5678070-images-thumbs&n=13&exp=1',
+        descr: 'Просто the best Jovob!',
         get SUMM() {
             return this.price * this.amount
         },
@@ -225,8 +246,64 @@ let extraProduct = {
         name: 'Сыр',
         price: 5000,
         kcall: 130
+    },
+    ketchup: {
+        name: 'Кетчуп бест',
+        price: 5000,
+        kcall: 300
     }
 }
+
+
+
+let data = '';
+
+function createProducts() {
+    let main = document.querySelector('.main');
+    for(let key in product) {
+        let { name, price, img, descr } = product[key]
+        data += `<section class="main__product" id="${key}">
+        <div class="main__product-preview">
+            <div class="main__product-info">
+                <img src="${img}" alt="" class="main__product-img">
+                <h2 class="main__product-title">${name}
+                    <span class="main__product-many">${price} сум</span>
+                </h2>
+            </div>
+            <p class="main__product-descr">
+                ${descr}
+            </p>
+        </div>
+        <div class="main__product-extra">
+            <div class="main__product-number">
+                <a class="main__product-btn fa-reg minus" data-symbol="-"></a>
+                <output class="main__product-num">0</output>
+                <a class="main__product-btn fa-reg plus" data-symbol="+"></a>
+            </div>
+            <div class="main__product-price"><span>0</span> сум</div> 
+        </div>
+        <div class="main__product-extraProduct">`;
+        for(let newKey in extraProduct) {
+            data += `<label class="main__product-label">
+                <input type="checkbox" class="main__product-checkbox" data-extra="${newKey}">
+                <span class="main__product-check"></span>
+                ${extraProduct[newKey].name}
+            </label>`;
+        }
+        data += `</div>
+                    <div class="main__product-kcall"><span>0</span> калорий</div> 
+                </section>`;
+    }
+    main.innerHTML = data;
+    logic();
+    
+}
+setTimeout(() => createProducts(),1500);
+
+
+
+function logic(){
+    
 
 let btnPlusOrMinus = document.querySelectorAll('.main__product-btn'),
     checkExtraProduct = document.querySelectorAll('.main__product-checkbox'),
@@ -234,39 +311,10 @@ let btnPlusOrMinus = document.querySelectorAll('.main__product-btn'),
     receipt = document.querySelector('.receipt'),
     receiptWindow = document.querySelector('.receipt__window'),
     receiptOut = document.querySelector('.receipt__window-out'),
-    receiptBtn = document.querySelector('.receipt__window-btn'),
-    timer = document.querySelector('.header__timer-extra'),
-
-
-    info = document.querySelectorAll('.main__product-info'),
-    btnClose = document.querySelector('.view__close'),
-    view = document.querySelector('.view');
-
-
-info.forEach(item => {
-    item.addEventListener('dblclick', () => {
-    getChild(item);
-    view.classList.add('active');
-    btnClose.addEventListener('click', () => {view.classList.remove('active');
-    })
-})
-})
-
-function getChild(item){
-    let child = item.childNodes;
-    let newChild = child[1];
-    let newChildSrc = newChild.getAttribute('src');
-    
-    let dochka = view.childNodes;
-    let newDochka = dochka[3];
-    newDochka.src = newChildSrc;
-}
+    receiptBtn = document.querySelector('.receipt__window-btn');
 
 btnPlusOrMinus.forEach(item => {
     let interval = 0;
-    item.addEventListener('click', () => {
-        plusOrMinus(item);
-    })
     item.addEventListener('mousedown', () => {
         interval = setInterval(() => plusOrMinus(item), 100)
     })
@@ -331,18 +379,6 @@ let korzina = [],
     totalKcall = 0;
     
 addCart.addEventListener('click', function() {
-    let price = document.querySelectorAll('.main__product-price span');
-    let kcall = document.querySelectorAll('.main__product-kcall span');
-    let num = document.querySelectorAll('.main__product-num');
-    num.forEach(product => {
-        product.innerHTML = 0;
-    })
-    price.forEach(product => {
-        product.innerHTML = 0;
-    })
-    kcall.forEach(product => {
-        product.innerHTML = 0;
-    })
     for(let key in product) {
        let productoObj = product[key];
        if(productoObj.amount > 0) {
@@ -371,26 +407,38 @@ addCart.addEventListener('click', function() {
     
     receiptOut.innerHTML =  `Ваш заказ: \n ${totalName} \nКаллорийность ${totalKcall} \nСумма ${totalPrice}сумм`;
     
+    
+    let output = document.querySelectorAll('.main__product-num'),
+        price = document.querySelectorAll('.main__product-price span'),
+        kcall = document.querySelectorAll('.main__product-kcall span');
+        
+    for(let i = 0; i < output.length;i++) {
+        output[i].innerHTML = 0;
+        price[i].innerHTML = 0;
+        kcall[i].innerHTML = 0;
+    }
 })
-
 
 receiptBtn.addEventListener('click', () => {
     location.reload();
 })
 
+}
 
-let x = 0;
+    const timer = document.querySelector('.header__timer-extra');
+let Offx = 0;
 function level() {
-    if(x < 100){
-        x++
-        timer.innerHTML = x; 
+    if(Offx < 100){
+        Offx++
+        timer.innerHTML = Offx; 
         var timeOut = setTimeout(() => level(),80);
-        (x > 50) ? timer.style.color = 'rgb(136, 255, 0)' : 'white';
-        (x > 75) ? timer.style.color = 'rgb(45, 192, 0)' : 'white';
-        (x == 100) ? timer.style.color = 'rgb(0, 180, 96)' : 'white'
-    }if(x > 50){
+        (Offx > 50) ? timer.style.color = 'rgb(136, 255, 0)' : 'white';
+        (Offx > 75) ? timer.style.color = 'rgb(45, 192, 0)' : 'white';
+        (Offx == 100) ? timer.style.color = 'rgb(0, 180, 96)' : 'white'
+    }if(Offx > 50){
         clearTimeout(timeOut);
-        timeOut = setTimeout(() => level(),x * 2);
+        timeOut = setTimeout(() => level(),Offx * 2);
     }
 }
-level();
+
+setTimeout(() => level(),1500);
